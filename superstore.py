@@ -1,20 +1,33 @@
-from statistics import mean, mode, multimode
 #Varios analísis
 
-def mode_func(iterable):
+def max_and_min(func):
+    def wrapper(*args, **kwargs):
+        results = func(*args, **kwargs)
+        max_freq = max([value for value in results.values()])
+        min_freq = min([value for value in results.values()])
+        for key, value in results.items():
+            if max_freq == value:
+                print(f"Max: {key} with: {max_freq}")
+            elif min_freq == value:
+                print(f"Min:{key} with: {min_freq}")
+    return wrapper
+
+
+def mode(iterable):
     elements = set(iterable)
-    dic = {}
+    dic_frequencies = {}
     for i in elements:
         frequency = 0
         for _ in iterable:
             if i == _:
                 frequency += 1
-        dic[i] = frequency
-    return dic
+        dic_frequencies[i] = frequency
+    return dic_frequencies
 
+@max_and_min
 def analysis(data):
-    frequency = mode_func(data)
-    print(frequency)
+    frequency = mode(data)
+    return frequency
 
 def extraction(file_name):
     with open(f"./files/{file_name}.txt", "r", encoding="utf-8") as f:
@@ -27,6 +40,9 @@ def run():
     city = extraction("city")
     state = extraction("state")
     analysis(ship_mode)
+    analysis(segment)
+    analysis(city)
+    analysis(state)
 
 if __name__=="__main__":
     run()
