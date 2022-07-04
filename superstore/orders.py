@@ -14,8 +14,9 @@ def max_and_min(func):
                 min_field.append(key)
         for k in field.keys():
             print(f"""
-Most requested {k.replace("_", " ")}: {max_field}, f: {max_f} order(s)
-Least requested {k.replace("_", " ")}: {min_field}, f: {min_f} order(s)""")
+FIELD -> {k.replace("_", " ").upper()}
+Most requested: {max_field}, f: {max_f} order(s)
+Least requested: {min_field}, f: {min_f} order(s)""")
     return wrapper
 
 def mode(iterable):
