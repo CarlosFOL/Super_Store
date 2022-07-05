@@ -1,11 +1,51 @@
 
+def report(func):
+    def wrapper(*args):
+        print("""
+-------------------
+COMPLAINT REPORT
+-------------------""")
+        for elements in func(*args):
+            for key, value in elements.items():
+                print(f"""
 
-def report():
-    def wrapper():
-        pass
+FIELD: {key}
+
+More complaints => {value[0]}, Q: {value[1]} complaint(s)
+
+Less complaints => {value[2]}, Q: {value[3]} complaint(s)
+""")
     return wrapper
 
+def max_min(dictionary, letter):
+    field = {
+        "c": "CLAIMERS", 
+        "i": "CITY",
+        "s": "STATE", 
+        "r": "REGION"
+    }
+    results = {}
+    max_value = max([v for v in dictionary.values()])
+    min_value = min([v for v in dictionary.values()])
+    max_field, min_field = [], []
+    for key, value in dictionary.items():
+        if value == max_value:
+            max_field.append(key)
+        elif value == min_value:
+            min_field.append(key)
+    for k, v in field.items():
+        if letter == k:
+            results[v] = [max_field, max_value, min_field, min_value]
+    return results
+
+@report
+def results(data):
+    claimers, city = max_min(data[0], "c"), max_min(data[1], "i")
+    state, region = max_min(data[2], "s"), max_min(data[3], "r")
+    return claimers, city, state, region 
+    
 def mode(iterable):
+    #Calculate the frequency of the items in the list.
     elements = set()
     for _ in iterable:   
         elements.add(_)
@@ -18,8 +58,8 @@ def mode(iterable):
         dic_frequencies[e] = frequency
     return dic_frequencies
 
-def check_claims(data_base):
-    #Who are the claimers? In which city/state/region there more claims? Here we check it.
+def check_complaints(data_base):
+    #Who are the claimers? In which city/state/region there more complaints? Here we check it.
     #On id_claim.txt are all orders_id that were returned by a claim.
     order_id = []
     claimers, city = [], []
@@ -73,8 +113,7 @@ def extraction():
 def run():
     #Build a data base for your respective analysis.
     data_base = structure(cleaning(extraction()))
-    results = check_claims(data_base)
-    print(results)
+    results(check_complaints(data_base))
 
 if __name__=="__main__":
     run()
