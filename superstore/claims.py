@@ -1,5 +1,6 @@
 
 def report(func):
+    """Put my results in a report"""
     def wrapper(*args):
         print("""
 -------------------
@@ -18,6 +19,8 @@ Less complaints => {value[2]}, Q: {value[3]} complaint(s)
     return wrapper
 
 def max_min(dictionary, letter):
+    """Calculate the max frequency and the min frequency to find 
+    the one who claims the most and the one who does the least."""
     field = {
         "c": "CLAIMERS", 
         "i": "CITY",
@@ -40,12 +43,13 @@ def max_min(dictionary, letter):
 
 @report
 def results(data):
+    """Here are the final results of my analysis"""
     claimers, city = max_min(data[0], "c"), max_min(data[1], "i")
     state, region = max_min(data[2], "s"), max_min(data[3], "r")
     return claimers, city, state, region 
     
 def mode(iterable):
-    #Calculate the frequency of the items in the list.
+    """Calculate the frequency of the items in the list"""
     elements = set()
     for _ in iterable:   
         elements.add(_)
@@ -59,8 +63,8 @@ def mode(iterable):
     return dic_frequencies
 
 def check_complaints(data_base):
-    #Who are the claimers? In which city/state/region there more complaints? Here we check it.
-    #On id_claim.txt are all orders_id that were returned by a claim.
+    """Who are the claimers? In which city/state/region there more complaints? Here we check it.
+    On id_claim.txt are all orders_id that were returned by a claim."""
     order_id = []
     claimers, city = [], []
     state, region = [], []
@@ -75,8 +79,8 @@ def check_complaints(data_base):
     return mode(claimers), mode(city), mode(state), mode(region)    
 
 def structure(data_wo_structure):  #wo = without
-    #We save all data in a dictionary (database), but first you need to remove ",".
-    #Then you save the customer's feature depending the field.
+    """We save all data in a dictionary (database), but first you need to remove ",".
+    Then you save the customer's feature depending the field"""
     fields = [
         "id","name", "city",
         "state", "region"
@@ -97,21 +101,21 @@ def structure(data_wo_structure):  #wo = without
     return data_base
 
 def cleaning(data):
-    #There are many empty spaces in the data. So you need to remove them.
+    """There are many empty spaces in the data. So you need to remove them."""
     for element in data:
         if element == "":
             data.remove(element)
     return data
 
 def extraction():
-    #Extract unstructured data of the customers's features.
-    #Such as: name, id, city, region, state, region.
+    """Extract unstructured data of the customers's features.
+    Such as: name, id, city, region, state, region."""
     with open("./../files/customers.txt", "r", encoding="utf-8") as f:
         data = [d.strip("\n") for d in f]
     return data
 
 def run():
-    #Build a data base for your respective analysis.
+    """Build a data base for your respective analysis."""
     data_base = structure(cleaning(extraction()))
     results(check_complaints(data_base))
 
